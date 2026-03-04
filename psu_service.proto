@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+package sonic.psu.v1;
+
+// ---------------------------------------------------------------------------
+// Messages
+// ---------------------------------------------------------------------------
+
+// Identifies a PSU by its zero-based index.
+message PsuIndex {
+  int32 psu_index = 1;
+}
+
+// Fan / Thermal sub-device info returned by get_all_fans / get_all_thermals.
+message FanInfo {
+  string name = 1;
+}
+
+message ThermalInfo {
+  string name = 1;
+}
+
+// --- DeviceBase RPCs -------------------------------------------------------
+
+// get_name
+message GetNameRequest   { int32 psu_index = 1; }
+message GetNameResponse  { string name = 1; }
+
+// get_presence
+message GetPresenceRequest  { int32 psu_index = 1; }
+message GetPresenceResponse { bool presence = 1; }
+
+// get_model
+message GetModelRequest  { int32 psu_index = 1; }
+message GetModelResponse { string model = 1; }
+
+// get_serial
+message GetSerialRequest  { int32 psu_index = 1; }
+message GetSerialResponse { string serial = 1; }
+
+// get_revision
+message GetRevisionRequest  { int32 psu_index = 1; }
+message GetRevisionResponse { string revision = 1; }
+
+// get_status
+message GetStatusRequest  { int32 psu_index = 1; }
+message GetStatusResponse { bool status = 1; }
+
+// get_position_in_parent
+message GetPositionInParentRequest  { int32 psu_index = 1; }
+message GetPositionInParentResponse { int32 position = 1; }
+
+// is_replaceable
+message IsReplaceableRequest  { int32 psu_index = 1; }
+message IsReplaceableResponse { bool replaceable = 1; }
+
+// --- PsuBase RPCs ----------------------------------------------------------
+
+// get_num_fans
+message GetNumFansRequest  { int32 psu_index = 1; }
+message GetNumFansResponse { int32 num_fans = 1; }
+
+// get_all_fans
+message GetAllFansRequest  { int32 psu_index = 1; }
+message GetAllFansResponse { repeated FanInfo fans = 1; }
+
+// get_fan
+message GetFanRequest  { int32 psu_index = 1; int32 fan_index = 2; }
+message GetFanResponse { FanInfo fan = 1; }
+
+// get_num_thermals
+message GetNumThermalsRequest  { int32 psu_index = 1; }
+message GetNumThermalsResponse { int32 num_thermals = 1; }
+
+// get_all_thermals
+message GetAllThermalsRequest  { int32 psu_index = 1; }
+message GetAllThermalsResponse { repeated ThermalInfo thermals = 1; }
+
+// get_thermal
+message GetThermalRequest  { int32 psu_index = 1; int32 thermal_index = 2; }
+message GetThermalResponse { ThermalInfo thermal = 1; }
+
+// get_voltage
+message GetVoltageRequest  { int32 psu_index = 1; }
+message GetVoltageResponse { float voltage = 1; }
+
+// get_current
+message GetCurrentRequest  { int32 psu_index = 1; }
+message GetCurrentResponse { float current = 1; }
+
+// get_power
+message GetPowerRequest  { int32 psu_index = 1; }
+message GetPowerResponse { float power = 1; }
+
+// get_powergood_status
+message GetPowergoodStatusRequest  { int32 psu_index = 1; }
+message GetPowergoodStatusResponse { bool powergood = 1; }
+
+// set_status_led
+message SetStatusLedRequest  { int32 psu_index = 1; string color = 2; }
+message SetStatusLedResponse { bool success = 1; }
+
+// get_status_led
+message GetStatusLedRequest  { int32 psu_index = 1; }
+message GetStatusLedResponse { string color = 1; }
+
+// get_temperature
+message GetTemperatureRequest  { int32 psu_index = 1; }
+message GetTemperatureResponse { float temperature = 1; }
+
+// get_temperature_high_threshold
+message GetTemperatureHighThresholdRequest  { int32 psu_index = 1; }
+message GetTemperatureHighThresholdResponse { float threshold = 1; }
+
+// get_voltage_high_threshold
+message GetVoltageHighThresholdRequest  { int32 psu_index = 1; }
+message GetVoltageHighThresholdResponse { float threshold = 1; }
+
+// get_voltage_low_threshold
+message GetVoltageLowThresholdRequest  { int32 psu_index = 1; }
+message GetVoltageLowThresholdResponse { float threshold = 1; }
+
+// get_maximum_supplied_power
+message GetMaximumSuppliedPowerRequest  { int32 psu_index = 1; }
+message GetMaximumSuppliedPowerResponse { float power = 1; }
+
+// get_psu_power_warning_suppress_threshold
+message GetPsuPowerWarningSuppressThresholdRequest  { int32 psu_index = 1; }
+message GetPsuPowerWarningSuppressThresholdResponse { float threshold = 1; }
+
+// get_psu_power_critical_threshold
+message GetPsuPowerCriticalThresholdRequest  { int32 psu_index = 1; }
+message GetPsuPowerCriticalThresholdResponse { float threshold = 1; }
+
+// get_status_master_led  (class-level — no psu_index needed)
+message GetStatusMasterLedRequest  {}
+message GetStatusMasterLedResponse { string color = 1; }
+
+// set_status_master_led  (class-level — no psu_index needed)
+message SetStatusMasterLedRequest  { string color = 1; }
+message SetStatusMasterLedResponse { bool success = 1; }
+
+// get_input_voltage
+message GetInputVoltageRequest  { int32 psu_index = 1; }
+message GetInputVoltageResponse { float voltage = 1; }
+
+// get_input_current
+message GetInputCurrentRequest  { int32 psu_index = 1; }
+message GetInputCurrentResponse { float current = 1; }
+
+// ---------------------------------------------------------------------------
+// Service
+// ---------------------------------------------------------------------------
+
+service PsuService {
+  // DeviceBase
+  rpc GetName               (GetNameRequest)               returns (GetNameResponse);
+  rpc GetPresence            (GetPresenceRequest)            returns (GetPresenceResponse);
+  rpc GetModel               (GetModelRequest)               returns (GetModelResponse);
+  rpc GetSerial              (GetSerialRequest)              returns (GetSerialResponse);
+  rpc GetRevision            (GetRevisionRequest)            returns (GetRevisionResponse);
+  rpc GetStatus              (GetStatusRequest)              returns (GetStatusResponse);
+  rpc GetPositionInParent    (GetPositionInParentRequest)    returns (GetPositionInParentResponse);
+  rpc IsReplaceable          (IsReplaceableRequest)          returns (IsReplaceableResponse);
+
+  // PsuBase — fans & thermals
+  rpc GetNumFans             (GetNumFansRequest)             returns (GetNumFansResponse);
+  rpc GetAllFans             (GetAllFansRequest)             returns (GetAllFansResponse);
+  rpc GetFan                 (GetFanRequest)                 returns (GetFanResponse);
+  rpc GetNumThermals         (GetNumThermalsRequest)         returns (GetNumThermalsResponse);
+  rpc GetAllThermals         (GetAllThermalsRequest)         returns (GetAllThermalsResponse);
+  rpc GetThermal             (GetThermalRequest)             returns (GetThermalResponse);
+
+  // PsuBase — electrical
+  rpc GetVoltage             (GetVoltageRequest)             returns (GetVoltageResponse);
+  rpc GetCurrent             (GetCurrentRequest)             returns (GetCurrentResponse);
+  rpc GetPower               (GetPowerRequest)               returns (GetPowerResponse);
+  rpc GetPowergoodStatus     (GetPowergoodStatusRequest)     returns (GetPowergoodStatusResponse);
+
+  // PsuBase — LEDs
+  rpc SetStatusLed           (SetStatusLedRequest)           returns (SetStatusLedResponse);
+  rpc GetStatusLed           (GetStatusLedRequest)           returns (GetStatusLedResponse);
+  rpc GetStatusMasterLed     (GetStatusMasterLedRequest)     returns (GetStatusMasterLedResponse);
+  rpc SetStatusMasterLed     (SetStatusMasterLedRequest)     returns (SetStatusMasterLedResponse);
+
+  // PsuBase — temperature & thresholds
+  rpc GetTemperature                        (GetTemperatureRequest)                        returns (GetTemperatureResponse);
+  rpc GetTemperatureHighThreshold           (GetTemperatureHighThresholdRequest)           returns (GetTemperatureHighThresholdResponse);
+  rpc GetVoltageHighThreshold               (GetVoltageHighThresholdRequest)               returns (GetVoltageHighThresholdResponse);
+  rpc GetVoltageLowThreshold                (GetVoltageLowThresholdRequest)                returns (GetVoltageLowThresholdResponse);
+  rpc GetMaximumSuppliedPower               (GetMaximumSuppliedPowerRequest)               returns (GetMaximumSuppliedPowerResponse);
+  rpc GetPsuPowerWarningSuppressThreshold   (GetPsuPowerWarningSuppressThresholdRequest)   returns (GetPsuPowerWarningSuppressThresholdResponse);
+  rpc GetPsuPowerCriticalThreshold          (GetPsuPowerCriticalThresholdRequest)          returns (GetPsuPowerCriticalThresholdResponse);
+
+  // PsuBase — input electrical
+  rpc GetInputVoltage        (GetInputVoltageRequest)        returns (GetInputVoltageResponse);
+  rpc GetInputCurrent        (GetInputCurrentRequest)        returns (GetInputCurrentResponse);
+}
