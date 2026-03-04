@@ -1,0 +1,18 @@
+[package]
+name = "sonic-psu-grpc-client"
+version = "0.1.0"
+edition = "2021"
+description = "Rust gRPC client for SONiC PSU service"
+
+[[bin]]
+name = "psu-client"
+path = "src/main.rs"
+
+[dependencies]
+tonic = "0.12"
+prost = "0.13"
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+
+[build-dependencies]
+tonic-build = "0.12"
